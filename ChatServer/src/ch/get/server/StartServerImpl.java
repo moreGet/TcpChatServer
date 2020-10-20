@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutorService;
 
 import ch.get.common.Connections;
 import ch.get.config.ExecutorConfig;
+import ch.get.model.ChatUser;
 import ch.get.view.RootLayoutController;
 
 public class StartServerImpl implements StartServer {
@@ -46,14 +47,9 @@ public class StartServerImpl implements StartServer {
 		try {
 			// 현재 유저가 존재한다면 삭제
 			if (Connections.getConnections().size() > 0) {
-				Connections.getConnections().forEach((key, value) -> {
-					try {
-						RootLayoutController.getInstance().printText("연결 해제 [ " + value.getName() + " ]");
-						value.getSocket().close();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				});
+				for (ChatUser user : Connections.getConnections()) {
+					user.getSocket().close();
+				}
 			} else {
 				RootLayoutController.getInstance().printText("[ " + "서버 이용자 존재하지 않음" + " ]");
 			}

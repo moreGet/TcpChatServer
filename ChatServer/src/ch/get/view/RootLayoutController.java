@@ -8,6 +8,7 @@ import java.util.function.BiConsumer;
 
 import ch.get.server.StartServerImpl;
 import ch.get.util.LogTime;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -77,7 +78,9 @@ public class RootLayoutController implements Initializable {
 	
 	// root TextArea
 	public void printText(String str) {
-		textArea.appendText(LogTime.getInstance().getTime() + str + "\r\n");
+		Platform.runLater(() -> {
+			textArea.appendText(LogTime.getInstance().getTime() + str + "\r\n");
+		});
 	}
 
 	public void setApp(Stage primaryStage) {

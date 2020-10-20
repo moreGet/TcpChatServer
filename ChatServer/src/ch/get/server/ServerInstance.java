@@ -1,10 +1,11 @@
 package ch.get.server;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.charset.Charset;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -50,29 +51,43 @@ public class ServerInstance implements Runnable {
 						+ Thread.currentThread().getName();
 
 				// 연결 수락 메시지
-				Platform.runLater(() -> {
-					RootLayoutController.getInstance().printText(message);
-				});
+//				Platform.runLater(() -> {
+//					RootLayoutController.getInstance().printText(message);
+//				});
+				
+				RootLayoutController.getInstance().printText(message);
 				
 				// 닉네임 받기
 				String nickName = "";
-				isr = new InputStreamReader(socket.getInputStream(), Charset.forName("UTF-8"));
-				br = new BufferedReader(isr);
 				
-				nickName = br.readLine();
+				// Client 비정상 종료일 경우 IOException 발생
+				byte[] byteArr = new byte[100];
+				InputStream is = socket.getInputStream();
+				
+				// 비정상 종료 일 경우 IO예외
+				int readByteCount = is.read(byteArr);
+				if (readByteCount == -1) { // 정상 종료 일 경우 예외 발생
+					throw new IOException();
+				}
+				
+				nickName = new String(byteArr, 0, readByteCount, "UTF-8");
 				nickName = Optional.ofNullable(nickName)
 			 					    .filter(name -> !name.isEmpty()).orElse("Guest");
 				
 				String uuid = UUID.randomUUID().toString();
 				ChatUser user = new ChatUser(nickName, socket, uuid);
-				Connections.getConnections().put(uuid, user);
+				Connections.getConnections().add(user);
 				
 				// 서버에 접속한 유저 수
-				Platform.runLater(() -> {
-					RootLayoutController.getInstance().printText("접속 [ " + user.getName() + " 님 ]");
-					RootLayoutController.getInstance().printText("현재 유저 [ " + Connections.getConnections().size() + " 명 ]");
-				});
+//				Platform.runLater(() -> {
+//					RootLayoutController.getInstance().printText("접속 [ " + user.getName() + " 님 ]");
+//					RootLayoutController.getInstance().printText("현재 유저 [ " + Connections.getConnections().size() + " 명 ]");
+//				});
+				
+				RootLayoutController.getInstance().printText("접속 [ " + user.getName() + " 님 ]");
+				RootLayoutController.getInstance().printText("현재 유저 [ " + Connections.getConnections().size() + " 명 ]");
 			} catch (Exception e) {
+				e.printStackTrace();
 				break;
 			}
 		}

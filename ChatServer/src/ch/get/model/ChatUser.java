@@ -48,9 +48,11 @@ public class ChatUser {
 					RootLayoutController.getInstance().printText(socket.getRemoteSocketAddress() + " [ " + message + " ]");
 					
 					// Lazy Connections Collection
-					// 브로드 캐스팅
+					// 브로드 캐스팅 자신을 제외한 나머지
 					for (ChatUser user : Connections.getConnections()) {
-						user.sender(message);
+						if (user != this) {
+							user.sender(message);
+						}
 					}
 				}
 			} catch (Exception e) {

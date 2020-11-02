@@ -20,22 +20,16 @@ public class ServerInstance implements Runnable {
 
 	private ServerSocket serverSocket;
 	
-	// STREAM
-	private InputStreamReader isr = null;
-	private BufferedReader br = null;
-//	private OutputStreamWriter osw = null;
-//	private PrintWriter pw = null;
-	
 	public ServerInstance(ServerSocket serverSocket) {
 		this.serverSocket = serverSocket;
 	}
 	
 	@Override
 	public void run() {
+		RootLayoutController.getInstance().printText(
+				LogTime.getInstance().getTime() + ServerMessageTag.SERVER_START.getTag());
+		
 		Platform.runLater(() -> {
-			RootLayoutController.getInstance().printText(
-					LogTime.getInstance().getTime() + ServerMessageTag.SERVER_START.getTag());
-			
 			RootLayoutController.getInstance()
 								.getStartButton()
 								.setText(ServerMessageTag.SERVER_STOP.getTag());
@@ -49,11 +43,6 @@ public class ServerInstance implements Runnable {
 						+ socket.getRemoteSocketAddress() 
 						+ " : " 
 						+ Thread.currentThread().getName();
-
-				// 연결 수락 메시지
-//				Platform.runLater(() -> {
-//					RootLayoutController.getInstance().printText(message);
-//				});
 				
 				RootLayoutController.getInstance().printText(message);
 				
@@ -77,12 +66,6 @@ public class ServerInstance implements Runnable {
 				String uuid = UUID.randomUUID().toString();
 				ChatUser user = new ChatUser(nickName, socket, uuid);
 				Connections.getConnections().add(user);
-				
-				// 서버에 접속한 유저 수
-//				Platform.runLater(() -> {
-//					RootLayoutController.getInstance().printText("접속 [ " + user.getName() + " 님 ]");
-//					RootLayoutController.getInstance().printText("현재 유저 [ " + Connections.getConnections().size() + " 명 ]");
-//				});
 				
 				RootLayoutController.getInstance().printText("접속 [ " + user.getName() + " 님 ]");
 				RootLayoutController.getInstance().printText("현재 유저 [ " + Connections.getConnections().size() + " 명 ]");

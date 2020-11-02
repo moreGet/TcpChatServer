@@ -58,10 +58,10 @@ public class ChatUser {
 			} catch (Exception e) {
 				try {
 					e.printStackTrace();
-					RootLayoutController.getInstance().printText("클라이언트 연결 해제 [ " + name + " ]");
-					Connections.getConnections().remove(ChatUser.this); // 비정상 종료 혹은 정상 종료 일떄
 					socket.close(); // 해당 user socket 닫아줌
-				} catch (IOException ie) {
+					Connections.getConnections().remove(ChatUser.this); // 비정상 종료 혹은 정상 종료 일떄
+					RootLayoutController.getInstance().printText("클라이언트 연결 해제 [ " + name + " ]");	
+				} catch (Exception ie) {
 					ie.printStackTrace();
 				}
 			}
@@ -86,6 +86,7 @@ public class ChatUser {
 					Connections.getConnections().remove(ChatUser.this); // 비정상 종료 혹은 정상 종료 일떄
 					socket.close(); // 해당 user socket 닫아줌
 				} catch (Exception e2) {
+					System.out.println(this.getClass().getName());
 					// TODO: handle exception
 				}
 			}
